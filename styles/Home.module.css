@@ -171,6 +171,29 @@
   margin-left: 0.5rem;
 }
 
+.pagination {
+  overflow: hidden;
+}
+
+.pagination > div {
+  float: left;
+}
+
+.pagination > div:first-child {
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.pagination > div:last-child {
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.pagination > div:first-child:hover,
+.pagination > div:last-child:hover {
+  color: #0070f3;
+}
+
 @media (max-width: 600px) {
   .grid {
     width: 100%;
@@ -187,6 +210,10 @@
   .blogPost {
     border-color: rgb(0, 0, 0);
   }
+
+  .blogPost:hover {
+    border: 1px solid #eaeaea;
+  }  
 
   .main {
     background-color: rgb(29, 31, 32);

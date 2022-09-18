@@ -1,16 +1,14 @@
 import Post from '../../components/blog/Post'
-import { getBlogPosts } from '../../utils/blog';
+import { getOrderedBlogPosts } from '../../utils/blog';
 import type { BlogPostData, BlogPostsBinding } from '../../types/blog'
 import Head from 'next/head'
 import styles from '../../styles/Home.module.css'
 import React, { useState } from 'react'
 
 export const getStaticProps = () => {
-    // TODO: Filter by date
-    console.log("We are getting static props, which is the first 5 blog posts.")
     const postIncrement = 5;
     const pageIncrement = 1;
-    const posts = getBlogPosts(pageIncrement, postIncrement);
+    const posts = getOrderedBlogPosts(pageIncrement, postIncrement, 'dateDesc');
 
     return {
         props: {
@@ -34,8 +32,8 @@ const Blog = ({ posts, pageIncrement, postIncrement }: BlogPostsBinding) => {
             return;
         }
         // Amend pageNumber
-        const newPageNumber = increment ? pageNumber + pageIncrement : pageNumber - pageIncrement; 
-        
+        const newPageNumber = increment ? pageNumber + pageIncrement : pageNumber - pageIncrement;
+
         // Call API to get more posts
         const res = await fetch(`/api/blog?page=${newPageNumber}&range=${postsPerPage}`); // absolute url is supported here
         const posts = await res.json();
@@ -65,10 +63,12 @@ const Blog = ({ posts, pageIncrement, postIncrement }: BlogPostsBinding) => {
                 {loadedPosts.map((post: BlogPostData) => (
                     <Post key={post.slug} post={post} />
                 ))}
-                {/* Add some component that displays the current page number, total pages, back and forward buttons. */}
-                <button onClick={() => loadPosts()} />
-                <div>{pageNumber}</div>
-                <button onClick={() => loadPosts(false)} />
+
+                <div className={styles.pagination}>
+                    <div onClick={() => loadPosts(false)}>&lt;</div>
+                    <div>{pageNumber}</div>
+                    <div onClick={() => loadPosts()}>&gt;</div>
+                </div>
             </main>
 
             <footer className={styles.footer}>

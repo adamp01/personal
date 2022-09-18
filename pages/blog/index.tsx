@@ -31,6 +31,8 @@ const Blog = ({ posts, pageIncrement, postIncrement }: BlogPostsBinding) => {
         if (pageNumber == 1 && !increment) {
             return;
         }
+        // TODO: If pageNumber is 1 or maxPages, grey out and disable the relevant increment button
+
         // Amend pageNumber
         const newPageNumber = increment ? pageNumber + pageIncrement : pageNumber - pageIncrement;
 
@@ -70,10 +72,6 @@ const Blog = ({ posts, pageIncrement, postIncrement }: BlogPostsBinding) => {
                     <div onClick={() => loadPosts()}>&gt;</div>
                 </div>
             </main>
-
-            <footer className={styles.footer}>
-                ©2022 Adam Wood
-            </footer>
         </div>
     )
 }

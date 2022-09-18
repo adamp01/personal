@@ -51,10 +51,6 @@ const Home: NextPage = () => {
           </a>
         </div>
       </main>
-
-      <footer className={styles.footer}>
-          ©2022 Adam Wood
-      </footer>
     </div>
   )
 }

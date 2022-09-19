@@ -9,7 +9,7 @@ export default function handler(
   const { page, range } = req.query;
   const pageInt = parseInt(Array.isArray(page) ? page[0] : page ?? '1');
   const rangeInt = parseInt(Array.isArray(range) ? range[0] : range ?? '5');
-  const posts = getOrderedBlogPosts(pageInt, rangeInt, 'dateDesc')
+  const { posts } = getOrderedBlogPosts(pageInt, rangeInt, 'dateDesc')
 
   res.status(200).json(posts);
 }

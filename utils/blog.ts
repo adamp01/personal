@@ -48,16 +48,18 @@ export const getBlogPosts = (pageIndex: number, postsPerPage: number, all = fals
       .slice((pageIndex - 1) * postsPerPage, pageIndex * postsPerPage);
   }
 
-  return posts;
+  return { posts, totalPosts: posts.length };
 }
 
 // Add function to get ordered blog posts
 export const getOrderedBlogPosts = (pageIndex: number, postsPerPage: number, orderBy: string) => {
   switch (orderBy) {
     case 'dateDesc':
-      const posts = getBlogPosts(pageIndex, postsPerPage, true);
-      return posts
+      const { posts, totalPosts } = getBlogPosts(pageIndex, postsPerPage, true);
+      const filteredPosts = posts
         .sort((a, b) => { return +b?.data.publishedOn - +a?.data.publishedOn; })
         .slice((pageIndex - 1) * postsPerPage, pageIndex * postsPerPage);
+      return { posts: filteredPosts, totalPosts };
   }
+  return { posts: {}, totalPosts: 0 };
 }

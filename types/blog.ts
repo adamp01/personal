@@ -1,6 +1,6 @@
 import { MDXRemoteProps } from 'next-mdx-remote'
 // Types for blog post files.
-export type BlogPostsBinding = { posts: BlogPosts; pageIncrement: number; postIncrement: string; };
+export type BlogPostsBinding = { posts: BlogPosts; pageIncrement: number; postIncrement: string; totalPages: number; };
 export type BlogPosts = Array<BlogPostData>;
 export type BlogPostData = { data: { [key: string]: any; }; content: string; slug: string; };
 export type BlogPostCardBinding = { post: BlogPostData; };

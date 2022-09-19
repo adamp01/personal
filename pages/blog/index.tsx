@@ -8,23 +8,26 @@ import React, { useState } from 'react'
 export const getStaticProps = () => {
     const postIncrement = 5;
     const pageIncrement = 1;
-    const posts = getOrderedBlogPosts(pageIncrement, postIncrement, 'dateDesc');
+    const { posts, totalPosts } = getOrderedBlogPosts(pageIncrement, postIncrement, 'dateDesc');
+    const totalPages = Math.ceil(totalPosts / postIncrement);
 
     return {
         props: {
             posts,
             pageIncrement,
-            postIncrement
+            postIncrement,
+            totalPages
         },
     };
 };
 
 
 
-const Blog = ({ posts, pageIncrement, postIncrement }: BlogPostsBinding) => {
+const Blog = ({ posts, pageIncrement, postIncrement, totalPages }: BlogPostsBinding) => {
     const [pageNumber, setPageNumber] = useState(pageIncrement)
     const [postsPerPage, setPostsPerPage] = useState(postIncrement);
     const [loadedPosts, setLoadedPosts] = useState(posts);
+    const [pages, setPages] = useState(totalPages); // Will use this when number of items per page can be changed.
 
     const loadPosts = async (increment = true) => {
         // If pageNumber is 1 and we try to decrement, don't allow it.
@@ -68,7 +71,7 @@ const Blog = ({ posts, pageIncrement, postIncrement }: BlogPostsBinding) => {
 
                 <div className={styles.pagination}>
                     <div onClick={() => loadPosts(false)}>&lt;</div>
-                    <div>{pageNumber}</div>
+                    <div>{pageNumber} / {pages}</div>
                     <div onClick={() => loadPosts()}>&gt;</div>
                 </div>
             </main>

@@ -1,4 +1,4 @@
-import Post from '../../components/blog/Post'
+import PostCard from '../../components/blog/PostCard'
 import { getOrderedBlogPosts } from '../../utils/blog';
 import type { BlogPostData, BlogPostsBinding } from '../../types/blog'
 import Head from 'next/head'
@@ -63,7 +63,7 @@ const Blog = ({ posts, pageIncrement, postIncrement }: BlogPostsBinding) => {
                 </p> */}
 
                 {loadedPosts.map((post: BlogPostData) => (
-                    <Post key={post.slug} post={post} />
+                    <PostCard key={post.slug} post={post} />
                 ))}
 
                 <div className={styles.pagination}>

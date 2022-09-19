@@ -54,7 +54,6 @@
 }
 
 .title {
-  margin: 0;
   line-height: 1.15;
   font-size: 4rem;
 }
@@ -102,6 +101,12 @@
 .blogPost {
   margin: 1rem;
   padding: 1.5rem;
+  text-align: center;
+}
+
+.blogCard {
+  margin: 1rem;
+  padding: 1.5rem;
   border: 1px solid #eaeaea;
   transition: border 0.15s ease;
   border-radius: 10px;
@@ -109,15 +114,15 @@
   max-width: 550px;
 }
 
-.blogPost:hover {
+.blogCard:hover {
   border: 1px solid #000000;
 }
 
-.blogPost h3 {
+.blogCard h3 {
   margin: 0px;
 }
 
-.blogPost p {
+.blogCard p {
   margin-left: 10px;
 }
 
@@ -208,11 +213,11 @@
   .navigation-button,
   .header,
   .footer,
-  .blogPost {
+  .blogCard {
     border-color: rgb(0, 0, 0);
   }
 
-  .blogPost:hover {
+  .blogCard:hover {
     border: 1px solid #eaeaea;
   }  
 

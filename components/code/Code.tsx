@@ -6,6 +6,9 @@ type CodeProps = {
 
 export default function Code({ children }: CodeProps) {
     return (
-        <code className={styles.code}>{children}</code>
+        <div>
+            <code className={styles.code}>{children}</code>
+            <br />
+        </div>
     )
 }

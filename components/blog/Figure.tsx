@@ -13,9 +13,9 @@ export default function Figure({ caption, src, width, height }: FigureProps) {
         <div className={styles.figure}>
             <Image src={src} width={width} height={height} />
             <br/>
-            <div className={styles.caption}>
+            <p className={styles.caption}>
                 {caption}
-            </div>
+            </p>
         </div>
     );
 };

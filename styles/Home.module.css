@@ -149,9 +149,7 @@
 }
 
 .figure {
-  background-color: #fafafa;
   display: inline-block;
-  border-radius: 1rem;
 }
 
 .figure > span {
@@ -159,10 +157,13 @@
 }
 
 .figure .caption {
-  padding: 0 1rem;
+  background-color: #fafafa;
+  padding: 0.5rem 1rem;
   text-align: left;
-  margin: 0.5rem 0;
   margin-bottom: 0.75rem;
+  margin-top: -0.25rem;
+  width: max-content;
+  border-radius: 0 0 0.5rem 0.5rem;
 }
 
 .navigation {
@@ -258,7 +259,7 @@
     background-color: rgb(29, 31, 32);
   }
 
-  .figure,
+  .figure .caption,
   .code {
     background-color: rgb(36, 38, 40);
   }

@@ -31,8 +31,8 @@ const BlogPost = ({ source, frontmatter }: BlogPostBinding) => {
     return (
         <div className={styles.container}>
             <Head>
-                <title>Adam Wood</title>
-                <meta name="description" content="Adam Wood's Blog" />
+                <title>{frontmatter.title}</title>
+                <meta name="description" content={frontmatter.title} />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <main className={styles.main}>

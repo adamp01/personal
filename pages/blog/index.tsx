@@ -51,7 +51,7 @@ const Blog = ({ posts, pageIncrement, postIncrement, totalPages }: BlogPostsBind
     return (
         <div className={styles.container}>
             <Head>
-                <title>Adam Wood</title>
+                <title>Blog</title>
                 <meta name="description" content="Adam Wood's Blog" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>

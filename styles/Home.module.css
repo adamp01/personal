@@ -14,6 +14,7 @@
 
 .header {
   overflow: auto;
+  background-color: #fcfcfc;
   border-bottom: 1px solid #eaeaea;
 }
 
@@ -74,12 +75,17 @@
 }
 
 .code {
-  background: #fafafa;
   border-radius: 0.5rem;
   padding: 0.75rem;
   font-size: 1.1rem;
   font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
     Bitstream Vera Sans Mono, Courier New, monospace;
+}
+
+/* We always want figure caption and code to be the same colour */
+.figure .caption,
+.code {
+  background: #f3f3f3;
 }
 
 .grid {
@@ -114,8 +120,7 @@
   border: 1px solid #eaeaea;
   transition: border 0.15s ease;
   border-radius: 10px;
-  min-width: 500px;
-  max-width: 550px;
+  width: 500px;
 }
 
 .blogCard:hover {
@@ -153,12 +158,11 @@
 }
 
 .figure > span {
-  border-radius: 0.25rem;
+  border-radius: 0.25rem 0.25rem 0.25rem 0;
 }
 
 .figure .caption {
-  background-color: #fafafa;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1rem 0.75rem 1rem;
   text-align: left;
   margin-bottom: 0.75rem;
   margin-top: -0.25rem;
@@ -247,12 +251,9 @@
     background-color: rgb(29, 31, 32);
   }
 
-  .header {
-    background-color: rgb(25, 27, 29);
-  }
-
+  .header,
   .navigation {
-    background-color: rgb(25, 27, 29);
+    background-color: rgb(31, 33, 36);
   }
 
   .footer {
@@ -261,7 +262,7 @@
 
   .figure .caption,
   .code {
-    background-color: rgb(36, 38, 40);
+    background-color: rgb(57, 59, 61);
   }
 
   .logo img {

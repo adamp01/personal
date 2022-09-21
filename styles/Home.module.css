@@ -247,17 +247,14 @@
     border: 1px solid #eaeaea;
   }  
 
-  .main {
-    background-color: rgb(29, 31, 32);
+  .main,
+  .footer {
+    background-color: rgb(20, 20, 20);
   }
 
   .header,
   .navigation {
-    background-color: rgb(31, 33, 36);
-  }
-
-  .footer {
-    background-color: rgb(29, 31, 32);
+    background-color: rgb(35, 37, 39);
   }
 
   .figure .caption,

@@ -7,7 +7,7 @@ type CodeProps = {
 export default function CodeBlock({ children }: CodeProps) {
     return (
         <div className={styles.codeParent}>
-            <code className={styles.code}>{children}</code>
+            <code className={styles.codeBlock}>{children}</code>
             <br />
         </div>
     )

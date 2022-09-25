@@ -13,9 +13,9 @@
   justify-content: center;
   align-items: center;
   max-width: 800px;
-  font-size: 16px;
+  font-size: 18px;
   margin: 2em auto;
-  line-height: 1.4;
+  line-height: 1.5;
   text-align: justify;
 }
 
@@ -90,8 +90,10 @@
 }
 
 .codeInline {
-  padding: 2px 4px 2px 4px;
-  border-radius: 5px;
+  padding: 2px 6px 2px 6px;
+  border-radius: 0.25rem;
+  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
+  Bitstream Vera Sans Mono, Courier New, monospace;
 }
 
 /* We always want figure caption and code to be the same colour */

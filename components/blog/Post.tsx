@@ -1,6 +1,7 @@
 import { MDXRemote } from 'next-mdx-remote'
 import styles from '../../styles/Home.module.css';
-import Code from '../code/Code'
+import CodeBlock from '../code/CodeBlock'
+import CodeInline from '../code/CodeInline'
 import Image from 'next/image'
 import Figure from './Figure'
 import type { BlogPostBinding } from '../../types/blog';
@@ -12,7 +13,7 @@ export default function Post({ source, frontmatter }: BlogPostBinding) {
                 {frontmatter.title}
             </h1>
             <div>
-                <MDXRemote {...source} components={{ Code, Image, Figure }} />
+                <MDXRemote {...source} components={{ CodeBlock, CodeInline, Image, Figure }} />
             </div>
         </div >
     );

@@ -4,7 +4,7 @@ type CodeProps = {
     children: string;
 }
 
-export default function Code({ children }: CodeProps) {
+export default function CodeBlock({ children }: CodeProps) {
     return (
         <div className={styles.codeParent}>
             <code className={styles.code}>{children}</code>

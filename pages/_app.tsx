@@ -8,9 +8,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <div>
       <Header></Header>
-      <main className={styles.main}>
-        <Component {...pageProps} />
-      </main>
+      <Component {...pageProps} />
       <Footer></Footer>
     </div>
   )

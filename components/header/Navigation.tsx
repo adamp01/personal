@@ -4,7 +4,7 @@ import styles from '../../styles/Home.module.css'
 export default function Navigation() {
     return (
         <div className={styles.navigation}>
-            <Link href="/" className={styles['navigation-button']}>
+            <Link href="/">
                 <div className={styles['navigation-button']}>Home</div>
             </Link>
             <Link href="/portfolio">

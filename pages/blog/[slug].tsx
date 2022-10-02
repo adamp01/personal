@@ -2,7 +2,7 @@ import Head from 'next/head'
 import { serialize } from 'next-mdx-remote/serialize'
 
 import Post from '../../components/blog/Post'
-import { getSlug, getPostBySlug } from '../../utils/blog';
+import { getSlug, getPostBySlug, getAdjacentBlogPosts } from '../../utils/blog';
 import styles from '../../styles/Home.module.css'
 
 import type { BlogPostBinding, DynamicSlugBinding } from '../../types/blog'
@@ -20,16 +20,18 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async ({ params }: DynamicSlugBinding) => {
     const { slug } = params;
     const post = getPostBySlug(slug);
-    const source = await serialize(post.content, {})
+    const source = await serialize(post.content, {});
+    const adjacentPosts = getAdjacentBlogPosts(slug);
     return {
         props: {
             source,
-            frontmatter: post.data
+            frontmatter: post.data,
+            adjacentPosts
         },
     };
 };
 
-const BlogPost = ({ source, frontmatter }: BlogPostBinding) => {
+const BlogPost = ({ source, frontmatter, adjacentPosts }: BlogPostBinding) => {
     return (
         <div className={styles.container}>
             <Head>
@@ -38,7 +40,7 @@ const BlogPost = ({ source, frontmatter }: BlogPostBinding) => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <main className={styles.main}>
-                <Post source={source} frontmatter={frontmatter} />
+                <Post source={source} frontmatter={frontmatter} adjacentPosts={adjacentPosts} />
             </main>
         </div>
     )

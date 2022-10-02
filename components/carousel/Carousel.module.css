@@ -1,25 +1,24 @@
 .carousel {
     display: grid;
-    place-items: center;
-    grid-template-areas: "inner-div";
-    width: 100%;
     filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.04)) drop-shadow(0 4px 3px rgba(0, 0, 0, 0.1));
+    grid-template-areas: "inner-div";
+    place-items: center;
     position: relative;
+    width: 100%;
 }
 
 .inner {
-    grid-area: inner-div;
-    display: flex;
-    overflow: hidden;
-    position: relative;
-    transition-property: all;
-    transition-duration: 500ms;
+    align-items: center;
+    cursor: pointer;
     display: flex;
     flex-direction: column;
+    grid-area: inner-div;
     justify-content: center;
-    align-items: center;
+    overflow: hidden;
+    position: relative;
+    transition-duration: 500ms;
+    transition-property: all;
     width: 100%;
-    cursor: pointer;
 }
 
 .inner > span {
@@ -27,8 +26,8 @@
 }
 
 .active {
+    animation: 0.7s ease-in-out;
     z-index: 20;
-    animation: 0.7s ease-in-out
 }
 
 .inactive {

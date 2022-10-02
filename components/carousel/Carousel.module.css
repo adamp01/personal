@@ -4,7 +4,6 @@
     grid-template-areas: "inner-div";
     place-items: center;
     position: relative;
-    width: 100%;
 }
 
 .inner {
@@ -18,7 +17,6 @@
     position: relative;
     transition-duration: 500ms;
     transition-property: all;
-    width: 100%;
 }
 
 .inner > span {

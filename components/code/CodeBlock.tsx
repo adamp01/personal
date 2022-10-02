@@ -6,8 +6,8 @@ type CodeProps = {
 
 export default function CodeBlock({ children }: CodeProps) {
     return (
-        <div className={styles.codeParent}>
-            <code className={styles.codeBlock}>{children}</code>
+        <div className={styles["code-parent"]}>
+            <code className={styles["code-block"]}>{children}</code>
             <br />
         </div>
     )

@@ -8,7 +8,7 @@ import type { BlogPostBinding } from '../../types/blog';
 
 export default function Post({ source, frontmatter }: BlogPostBinding) {
     return (
-        <div className={styles.blogPost}>
+        <div className={styles["blogPost"]}>
             <h1 className={styles.title}>
                 {frontmatter.title}
             </h1>

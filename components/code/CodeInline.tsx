@@ -5,5 +5,5 @@ type CodeProps = {
 }
 
 export default function CodeBlock({ children }: CodeProps) {
-    return <code className={styles.codeInline}>{children}</code>
+    return <code className={styles["code-inline"]}>{children}</code>
 }

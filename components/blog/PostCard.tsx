@@ -4,7 +4,7 @@ import type { BlogPostCardBinding } from '../../types/blog';
 
 export default function PostCard({ post }: BlogPostCardBinding) {
     return (
-        <div className={styles.blogCard}>
+        <div className={styles["blog-card"]}>
             <h3>
                 <Link href={`/blog/${post.slug}`}>{post.data.title}</Link>
 

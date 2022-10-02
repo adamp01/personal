@@ -8,7 +8,6 @@
 }
 
 .inner {
-    /* important part */
     grid-area: inner-div;
     display: flex;
     overflow: hidden;

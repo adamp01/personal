@@ -30,7 +30,7 @@ export default function Carousel({ data, width, height, transition }: CarouselPr
     return (
         <div className={styles.carousel}>
             {data.map((item, index) => (
-                <div className={`${styles.inner} ${(index === activeIndex ? styles.active : styles.inactive)}`} >
+                <div className={`${styles.inner} ${(index === activeIndex ? styles.active : styles.inactive)}`} key={item.src} >
                     <Image src={item.src} width={width} height={height} />
                     <br />
                     <p className={styles.caption}>

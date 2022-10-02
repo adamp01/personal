@@ -1,9 +1,11 @@
+import Image from 'next/image'
 import { MDXRemote } from 'next-mdx-remote'
-import styles from '../../styles/Home.module.css';
+
 import CodeBlock from '../code/CodeBlock'
 import CodeInline from '../code/CodeInline'
-import Image from 'next/image'
 import Figure from './Figure'
+import styles from '../../styles/Home.module.css';
+
 import type { BlogPostBinding } from '../../types/blog';
 
 export default function Post({ source, frontmatter }: BlogPostBinding) {

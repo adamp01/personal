@@ -1,5 +1,7 @@
 import Link from 'next/link';
+
 import styles from '../../styles/Home.module.css';
+
 import type { BlogPostCardBinding } from '../../types/blog';
 
 export default function PostCard({ post }: BlogPostCardBinding) {

@@ -1,9 +1,11 @@
+import Head from 'next/head'
+import React, { useState } from 'react'
+
 import PostCard from '../../components/blog/PostCard'
 import { getOrderedBlogPosts } from '../../utils/blog';
-import type { BlogPostData, BlogPostsBinding } from '../../types/blog'
-import Head from 'next/head'
 import styles from '../../styles/Home.module.css'
-import React, { useState } from 'react'
+
+import type { BlogPostData, BlogPostsBinding } from '../../types/blog'
 
 export const getStaticProps = () => {
     const postIncrement = 5;

@@ -1,6 +1,7 @@
-import styles from './Carousel.module.css';
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react';
+
+import styles from './Carousel.module.css';
 
 type CarouselProps = {
     data: Array<{

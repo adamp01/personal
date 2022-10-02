@@ -1,8 +1,10 @@
-import Post from '../../components/blog/Post'
-import { getSlug, getPostBySlug } from '../../utils/blog';
 import Head from 'next/head'
 import { serialize } from 'next-mdx-remote/serialize'
+
+import Post from '../../components/blog/Post'
+import { getSlug, getPostBySlug } from '../../utils/blog';
 import styles from '../../styles/Home.module.css'
+
 import type { BlogPostBinding, DynamicSlugBinding } from '../../types/blog'
 
 // Generate the static paths that are required

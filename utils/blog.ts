@@ -1,6 +1,6 @@
 import fs from 'fs';
-import path from 'path';
 import matter from 'gray-matter';
+import path from 'path';
 import { sync } from 'glob';
 
 const postsPath = path.join(process.cwd(), 'pages', 'blog', 'posts');

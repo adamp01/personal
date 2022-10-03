@@ -139,6 +139,7 @@
   margin-left: -15vw;
   margin-right: -20vw;
   position: relative;
+  max-width: 100vw;
 }
 
 .figure > span {
@@ -194,9 +195,11 @@
 
 .previous-post,
 .next-post {
-  margin: 50px;
+  margin: 20px;
   padding: 0 1.5rem 1.5rem 1.5rem;
-  max-width: 300px;
+  overflow: hidden;   
+  width: 350px;
+  white-space: nowrap;
 }
 
 .previous-post,
@@ -320,5 +323,14 @@
 
   .logo img {
     filter: invert(1);
+  }
+}
+
+/* Mobile Rules */
+@media only screen and (hover: none) and (pointer: coarse){
+  .blog-card,
+  .previous-post,
+  .next-post {
+    max-width: 350px;
   }
 }

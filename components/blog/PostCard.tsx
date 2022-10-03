@@ -4,21 +4,9 @@ import styles from '../../styles/Home.module.css';
 
 import type { BlogPostCardBinding } from '../../types/blog';
 
-export default function PostCard({
-  post,
-  previous,
-  next
-}: BlogPostCardBinding) {
+export default function PostCard({ post }: BlogPostCardBinding) {
   return (
-    <div
-      className={`${
-        next
-          ? styles['next-post']
-          : previous
-          ? styles['previous-post']
-          : styles['blog-card']
-      }`}
-    >
+    <div className={styles['blog-card']}>
       <h3>
         <Link href={`/blog/${post.slug}`}>{post.data.title}</Link>
       </h3>

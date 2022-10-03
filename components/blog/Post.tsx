@@ -4,7 +4,7 @@ import { MDXRemote } from 'next-mdx-remote';
 import CodeBlock from '../code/CodeBlock';
 import CodeInline from '../code/CodeInline';
 import Figure from './Figure';
-import PostCard from './PostCard';
+import AdjacentPosts from './AdjacentPosts';
 import styles from '../../styles/Home.module.css';
 
 import type { BlogPostBinding } from '../../types/blog';
@@ -23,18 +23,10 @@ export default function Post({
           components={{ CodeBlock, CodeInline, Image, Figure }}
         />
       </div>
-      <div>
-        {adjacentPosts.previous ? (
-          <PostCard post={adjacentPosts.previous} previous={'true'} />
-        ) : (
-          <div className={styles['previous-holder']} />
-        )}
-        {adjacentPosts.next ? (
-          <PostCard post={adjacentPosts.next} next={'true'} />
-        ) : (
-          <div className={styles['next-holder']} />
-        )}
-      </div>
+      <AdjacentPosts
+        previous={adjacentPosts?.previous}
+        next={adjacentPosts?.next}
+      />
     </div>
   );
 }

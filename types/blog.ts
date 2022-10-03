@@ -23,6 +23,15 @@ export type BlogPostBinding = {
   frontmatter: frontmatter;
   adjacentPosts: AdjacentPosts;
 };
+export type AdjacentPosts = {
+  previous: BlogPostCardData | null;
+  next: BlogPostCardData | null;
+};
+export type AdjacentPostBinding = {
+    data: BlogPostCardData | null,
+    previous?: string;
+    next?: string;
+}
 export type DynamicSlugBinding = { params: { slug: string } };
 
 // Internal types
@@ -33,20 +42,4 @@ type frontmatter = {
   excerpt: string;
   tags: string;
   featured: string;
-};
-type AdjacentPosts = {
-  previous: {
-    slug: string;
-    data: {
-      title: string;
-      excerpt: string;
-    };
-  } | null;
-  next: {
-    slug: string;
-    data: {
-      title: string;
-      excerpt: string;
-    };
-  } | null;
 };

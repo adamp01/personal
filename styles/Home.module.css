@@ -352,7 +352,7 @@
   /* Blog post padding on mobile */
   .blog-post p,
   .blog-post ul {
-    padding: 1.5rem;
+    padding: 0 1.5rem;
   }
 
   .blog-card,

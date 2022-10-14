@@ -135,11 +135,8 @@
 
 /* Figures */
 .figure {
-  display: inline-block;
-  margin-left: -15vw;
-  margin-right: -20vw;
   position: relative;
-  max-width: 100vw;
+  max-width: 100%;
 }
 
 .figure > span {
@@ -197,7 +194,7 @@
 .next-post {
   margin: 20px;
   padding: 0 1.5rem 1.5rem 1.5rem;
-  overflow: hidden;   
+  overflow: hidden;
   width: 350px;
   white-space: nowrap;
 }
@@ -327,10 +324,46 @@
 }
 
 /* Mobile Rules */
-@media only screen and (hover: none) and (pointer: coarse){
+@media only screen and (hover: none) and (pointer: coarse) {
+  .container,
+  .main {
+    max-width: 100%;
+  }
+
+  .main {
+    font-size: 14px;
+    display: flex;
+  }
+
+  .header-name {
+    padding: 0.25rem 0.5rem;
+  }
+
+  .nav-button {
+    margin: 1rem 0.5rem;
+    padding: 0.25rem 0.25rem;
+  }
+
+  .footer {
+    margin: 0 2rem;
+    padding: 2rem 0;
+  }
+
+  /* Blog post padding on mobile */
+  .blog-post p,
+  .blog-post ul {
+    padding: 1.5rem;
+  }
+
   .blog-card,
   .previous-post,
   .next-post {
     max-width: 350px;
+  }
+
+  .figure .caption {
+    padding-top: 12px;
+    font-size: 12px;
+    max-width: 75%;
   }
 }

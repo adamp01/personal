@@ -190,13 +190,27 @@
   transition: border 0.15s ease;
 }
 
+.adjacent-post-container {
+  display: flex;
+  font-size: 15px;
+}
+
 .previous-post,
 .next-post {
   margin: 20px;
   padding: 0 1.5rem 1.5rem 1.5rem;
   overflow: hidden;
   width: 350px;
-  white-space: nowrap;
+}
+
+.previous-post p,
+.next-post p {
+  margin: 0.5rem 1rem;
+}
+
+.previous-post h3,
+.next-post h3 {
+  margin: 0;
 }
 
 .previous-post,
@@ -350,9 +364,22 @@
   }
 
   /* Blog post padding on mobile */
+  .blog-post h1 {
+    font-size: 50px;
+  }
+
   .blog-post p,
   .blog-post ul {
     padding: 0 1.5rem;
+  }
+
+  .adjacent-post-container {
+    display: inline;
+  }
+
+  .previous-post p,
+  .next-post p {
+    margin: 0.5rem 0;
   }
 
   .blog-card,

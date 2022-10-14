@@ -15,7 +15,7 @@ export default function Post({
   adjacentPosts
 }: BlogPostBinding) {
   return (
-    <div className={styles['blogPost']}>
+    <div className={styles['blog-post']}>
       <h1 className={styles.title}>{frontmatter.title}</h1>
       <div>
         <MDXRemote

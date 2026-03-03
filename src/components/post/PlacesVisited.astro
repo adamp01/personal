@@ -1,0 +1,36 @@
+---
+import type { CollectionEntry } from "astro:content";
+import SidebarBox from "./SidebarBox.astro";
+
+type TravelData = CollectionEntry<"travels">["data"];
+
+interface Props {
+  cities: TravelData["cities"];
+}
+
+const { cities } = Astro.props;
+---
+
+<SidebarBox title="Places visited">
+  <ul>
+    {cities.map((c) => <li>{c.name}</li>)}
+  </ul>
+</SidebarBox>
+
+<style>
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.875rem;
+  }
+
+  ul li {
+    padding: 0.2rem 0;
+    border-bottom: 1px solid rgba(255, 34, 229, 0.2);
+  }
+
+  ul li:last-child {
+    border-bottom: none;
+  }
+</style>

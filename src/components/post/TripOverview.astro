@@ -1,0 +1,81 @@
+---
+import type { CollectionEntry } from "astro:content";
+import SidebarBox from "./SidebarBox.astro";
+
+type TravelData = CollectionEntry<"travels">["data"];
+
+interface Props {
+  data: TravelData;
+}
+
+const { data } = Astro.props;
+
+const durationDays =
+  (new Date(data.dateEnd).getTime() - new Date(data.dateStart).getTime()) /
+    (1000 * 60 * 60 * 24) +
+  1;
+---
+
+<SidebarBox title="Trip overview">
+  <dl>
+    <div>
+      <dt>Dates</dt>
+      <dd>{data.dateStart} &rarr; {data.dateEnd}</dd>
+    </div>
+    <div>
+      <dt>Duration</dt>
+      <dd>{durationDays} days</dd>
+    </div>
+    <div>
+      <dt>Countries</dt>
+      <dd>{data.countries.join(", ")}</dd>
+    </div>
+    {
+      data.rating && (
+        <div>
+          <dt>Rating</dt>
+          <dd>{data.rating} &#9733;</dd>
+        </div>
+      )
+    }
+    {
+      data.categories.length > 0 && (
+        <div>
+          <dt>Categories</dt>
+          <dd>{data.categories.join(", ")}</dd>
+        </div>
+      )
+    }
+  </dl>
+</SidebarBox>
+
+<style>
+  dl {
+    margin: 0;
+  }
+
+  dl > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+    padding-block: 0.2rem;
+    border-bottom: 1px solid rgba(255, 34, 229, 0.2);
+  }
+
+  dl > div:last-child {
+    border-bottom: none;
+  }
+
+  dt {
+    color: rgba(255, 255, 255, 0.5);
+    flex-shrink: 0;
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 700;
+    text-align: right;
+    color: var(--text);
+  }
+</style>

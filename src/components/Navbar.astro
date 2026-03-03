@@ -1,0 +1,205 @@
+---
+const path = Astro.url.pathname;
+---
+
+<header class="topnav" id="topnav">
+  <div class="topnav-inner">
+    <a href="/" class="topnav-logo">
+      <img
+        src="/favicon.svg"
+        alt="Adam's personal website"
+        width="42"
+        height="42"
+        transition:persist
+      />
+    </a>
+
+    <nav class="topnav-links" id="topnav-links" aria-label="Main navigation">
+      <a href="/" class:list={["topnav-link", { active: path === "/" }]}
+        >About</a
+      >
+      <a
+        href="/travels"
+        class:list={["topnav-link", { active: path.startsWith("/travels") }]}
+        >Travels</a
+      >
+    </nav>
+
+    <button
+      class="topnav-burger"
+      id="topnav-burger"
+      aria-label="Toggle navigation"
+      aria-expanded="false"
+      aria-controls="topnav-links"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+</header>
+
+<script>
+  function initBurger() {
+    const burger = document.getElementById("topnav-burger")!;
+    const links = document.getElementById("topnav-links")!;
+
+    burger.addEventListener("click", () => {
+      const open = links.classList.toggle("is-open");
+      burger.setAttribute("aria-expanded", String(open));
+      burger.classList.toggle("is-open", open);
+    });
+
+    // Close menu when a link is tapped on mobile
+    links.querySelectorAll("a").forEach((a) => {
+      a.addEventListener("click", () => {
+        links.classList.remove("is-open");
+        burger.classList.remove("is-open");
+        burger.setAttribute("aria-expanded", "false");
+      });
+    });
+  }
+
+  // Re-run after every client-side navigation (Astro View Transitions)
+  document.addEventListener("astro:page-load", initBurger);
+</script>
+
+<style>
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: var(--nav-h);
+    background: var(--bg);
+  }
+
+  .topnav-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    height: 100%;
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .topnav-logo {
+    display: flex;
+    font-weight: 900;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    text-decoration: none;
+    white-space: nowrap;
+    margin-right: auto;
+  }
+
+  .topnav-logo:hover {
+    color: var(--primary);
+    text-decoration: none;
+  }
+
+  .topnav-links {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .topnav-link {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text);
+    border: 2px solid var(--primary);
+    text-decoration: none;
+    transition:
+      background 80ms,
+      color 80ms,
+      border-color 80ms;
+  }
+
+  .topnav-link:hover {
+    background: var(--secondary);
+    color: var(--bg);
+    border-color: var(--secondary);
+    text-decoration: none;
+  }
+
+  :global(.topnav-link.active) {
+    background: var(--primary);
+    color: var(--bg);
+    border-color: var(--primary);
+    text-decoration: none;
+  }
+
+  /* ── Hamburger ─────────────────────────────────────────────── */
+  .topnav-burger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+    background: transparent;
+    border: 2px solid var(--primary);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .topnav-burger span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: var(--primary);
+    transition:
+      transform 200ms,
+      opacity 200ms;
+    transform-origin: center;
+  }
+
+  :global(.topnav-burger.is-open) span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  :global(.topnav-burger.is-open) span:nth-child(2) {
+    opacity: 0;
+  }
+  :global(.topnav-burger.is-open) span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  @media (max-width: 640px) {
+    .topnav-burger {
+      display: flex;
+    }
+
+    .topnav-links {
+      display: none;
+      position: absolute;
+      top: var(--nav-h);
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      background: var(--bg);
+      border-bottom: var(--border);
+      z-index: 99;
+    }
+
+    :global(.topnav-links.is-open) {
+      display: flex;
+    }
+
+    .topnav-link {
+      padding: 1rem 1.5rem;
+      border: none;
+      border-bottom: 1px solid rgba(255, 34, 229, 0.25);
+      font-size: 1rem;
+    }
+
+    .topnav-link:last-child {
+      border-bottom: none;
+    }
+  }
+</style>

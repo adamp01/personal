@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import ImageBase from "../../components/post/ImageBase.astro";
+import TripCard from "../../components/TripCard.astro";
 
 const travels = await getCollection("travels");
 travels.sort((a, b) => (a.data.dateStart < b.data.dateStart ? 1 : -1));
@@ -16,36 +16,26 @@ travels.sort((a, b) => (a.data.dateStart < b.data.dateStart ? 1 : -1));
 
     <div class="trip-grid">
       {
-        travels.map((entry) => {
-          const d = entry.data;
-          const duration =
-            (new Date(d.dateEnd).getTime() - new Date(d.dateStart).getTime()) /
-              (1000 * 60 * 60 * 24) +
-            1;
-
-          return (
-            <article class="trip-card">
-              <a href={`/travels/${entry.slug}`}>
-                {d.coverImage && (
-                  <ImageBase
-                    src={d.coverImage}
-                    alt={d.title}
-                    width={800}
-                    height={500}
-                  />
-                )}
-                <div class="trip-card-body">
-                  <h2>{d.title}</h2>
-                  <p class="trip-meta">
-                    {d.countries.join(", ")} &middot; {duration} days
-                    {d.rating && <span> &middot; {d.rating} &#9733;</span>}
-                  </p>
-                </div>
-              </a>
-            </article>
-          );
-        })
+        travels.map((entry) => (
+          <TripCard
+            slug={entry.slug}
+            title={entry.data.title}
+            countries={entry.data.countries}
+            dateStart={entry.data.dateStart}
+            dateEnd={entry.data.dateEnd}
+            rating={entry.data.rating}
+            coverImage={entry.data.coverImage}
+          />
+        ))
       }
     </div>
   </div>
 </BaseLayout>
+
+<style>
+  .trip-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+</style>

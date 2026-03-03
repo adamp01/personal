@@ -1,12 +1,13 @@
 ---
 import { ClientRouter } from "astro:transitions";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
 
 interface Props {
   title?: string;
 }
 
 const { title = "Adam Wood" } = Astro.props;
-const path = Astro.url.pathname;
 ---
 
 <html lang="en">
@@ -18,106 +19,13 @@ const path = Astro.url.pathname;
     <ClientRouter />
   </head>
   <body>
-    <header class="topnav" id="topnav">
-      <div class="topnav-inner">
-        <a href="/" class="topnav-logo">
-          <img
-            src="/favicon.svg"
-            alt="Adam's personal website"
-            width="42"
-            height="42"
-            transition:persist
-          />
-        </a>
-
-        <nav
-          class="topnav-links"
-          id="topnav-links"
-          aria-label="Main navigation"
-        >
-          <a href="/" class:list={["topnav-link", { active: path === "/" }]}
-            >About</a
-          >
-          <a
-            href="/travels"
-            class:list={[
-              "topnav-link",
-              { active: path.startsWith("/travels") },
-            ]}>Travels</a
-          >
-        </nav>
-
-        <button
-          class="topnav-burger"
-          id="topnav-burger"
-          aria-label="Toggle navigation"
-          aria-expanded="false"
-          aria-controls="topnav-links"
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </header>
+    <Navbar />
 
     <div class="page-content">
       <slot />
     </div>
 
-    <footer class="site-footer">
-      <div class="site-footer-inner">
-        <span class="site-footer-copy"
-          >&copy; {new Date().getFullYear()} Adam Wood</span
-        >
-        <a
-          class="site-footer-gh"
-          href="https://github.com/adamp01/personal"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="View source on GitHub"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"
-            ></path>
-          </svg>
-          Source
-        </a>
-      </div>
-    </footer>
-
-    <script>
-      function initBurger() {
-        const burger = document.getElementById("topnav-burger")!;
-        const links = document.getElementById("topnav-links")!;
-
-        burger.addEventListener("click", () => {
-          const open = links.classList.toggle("is-open");
-          burger.setAttribute("aria-expanded", String(open));
-          burger.classList.toggle("is-open", open);
-        });
-
-        // Close menu when a link is tapped on mobile
-        links.querySelectorAll("a").forEach((a) => {
-          a.addEventListener("click", () => {
-            links.classList.remove("is-open");
-            burger.classList.remove("is-open");
-            burger.setAttribute("aria-expanded", "false");
-          });
-        });
-      }
-
-      // Re-run after every client-side navigation (Astro View Transitions)
-      document.addEventListener("astro:page-load", initBurger);
-    </script>
+    <Footer />
   </body>
 </html>
 
@@ -168,147 +76,6 @@ const path = Astro.url.pathname;
 
   .page-content {
     flex: 1;
-  }
-
-  /* ── Top nav ───────────────────────────────────────────────── */
-  .topnav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    height: var(--nav-h);
-    background: var(--bg);
-    /* border-bottom: var(--border); */
-  }
-
-  .topnav-inner {
-    max-width: 960px;
-    margin: 0 auto;
-    height: 100%;
-    padding: 0 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .topnav-logo {
-    display: flex;
-    font-weight: 900;
-    font-size: 1rem;
-    letter-spacing: -0.01em;
-    color: var(--text);
-    text-decoration: none;
-    white-space: nowrap;
-    margin-right: auto;
-  }
-
-  .topnav-logo:hover {
-    color: var(--primary);
-    text-decoration: none;
-  }
-
-  .topnav-links {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .topnav-link {
-    display: inline-block;
-    padding: 0.4rem 1rem;
-    font-size: 0.8rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text);
-    border: 2px solid var(--primary);
-    text-decoration: none;
-    transition:
-      background 80ms,
-      color 80ms,
-      border-color 80ms;
-  }
-
-  .topnav-link:hover {
-    background: var(--secondary);
-    color: var(--bg);
-    border-color: var(--secondary);
-    text-decoration: none;
-  }
-
-  .topnav-link.active {
-    background: var(--primary);
-    color: var(--bg);
-    border-color: var(--primary);
-    text-decoration: none;
-  }
-
-  /* ── Hamburger ─────────────────────────────────────────────── */
-  .topnav-burger {
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    gap: 5px;
-    width: 36px;
-    height: 36px;
-    padding: 6px;
-    background: transparent;
-    border: 2px solid var(--primary);
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  .topnav-burger span {
-    display: block;
-    width: 100%;
-    height: 2px;
-    background: var(--primary);
-    transition:
-      transform 200ms,
-      opacity 200ms;
-    transform-origin: center;
-  }
-
-  /* Animate to X when open */
-  .topnav-burger.is-open span:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
-  }
-  .topnav-burger.is-open span:nth-child(2) {
-    opacity: 0;
-  }
-  .topnav-burger.is-open span:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
-  }
-
-  @media (max-width: 640px) {
-    .topnav-burger {
-      display: flex;
-    }
-
-    .topnav-links {
-      display: none;
-      position: absolute;
-      top: var(--nav-h);
-      left: 0;
-      right: 0;
-      flex-direction: column;
-      background: var(--bg);
-      border-bottom: var(--border);
-      z-index: 99;
-    }
-
-    .topnav-links.is-open {
-      display: flex;
-    }
-
-    .topnav-link {
-      padding: 1rem 1.5rem;
-      border: none;
-      border-bottom: 1px solid rgba(255, 34, 229, 0.25);
-      font-size: 1rem;
-    }
-
-    .topnav-link:last-child {
-      border-bottom: none;
-    }
   }
 
   /* ── Typography ────────────────────────────────────────────── */
@@ -364,7 +131,7 @@ const path = Astro.url.pathname;
     margin-bottom: 0.5rem;
   }
 
-  /* ── Page header rule ──────────────────────────────────────── */
+  /* ── Page header ───────────────────────────────────────────── */
   .page-header {
     margin-bottom: 2.5rem;
     padding-bottom: 1.5rem;
@@ -373,60 +140,6 @@ const path = Astro.url.pathname;
 
   .page-header h1 {
     margin-top: 0.3rem;
-  }
-
-  /* ── Trip card ─────────────────────────────────────────────── */
-  .trip-card {
-    border: var(--border);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    background: var(--bg);
-    transition:
-      box-shadow 80ms,
-      transform 80ms;
-  }
-
-  .trip-card:hover {
-    box-shadow: 6px 6px 0 var(--primary);
-    transform: translate(-1px, -1px);
-  }
-
-  .trip-card a {
-    color: inherit;
-    text-decoration: none;
-    display: block;
-  }
-
-  .trip-card img {
-    display: block;
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-    border-bottom: var(--border);
-  }
-
-  .trip-card-body {
-    padding: 1rem 1.25rem 1.25rem;
-  }
-
-  .trip-card-body h2 {
-    font-size: 1.2rem;
-    margin-bottom: 0.3rem;
-  }
-
-  .trip-meta {
-    font-size: 0.825rem;
-    color: var(--accent);
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-  }
-
-  /* ── Trip grid ─────────────────────────────────────────────── */
-  .trip-grid {
-    display: grid;
-    gap: 1.5rem;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
 
   /* ── Article prose ─────────────────────────────────────────── */
@@ -481,55 +194,5 @@ const path = Astro.url.pathname;
   }
   ::-webkit-scrollbar-thumb {
     background: var(--primary);
-  }
-
-  /* ── Footer ────────────────────────────────────────────────── */
-  .site-footer {
-    padding: 0 1.5rem;
-  }
-
-  @media (max-width: 640px) {
-    .site-footer {
-      padding: 0;
-    }
-
-    .site-footer-inner {
-      padding: 0.75rem 1rem;
-    }
-  }
-
-  .site-footer-inner {
-    max-width: 960px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    border-top: 1px solid rgba(255, 34, 229, 0.25);
-    padding: 0.75rem 1.5rem;
-  }
-
-  .site-footer-copy {
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.45);
-    font-weight: 600;
-  }
-
-  .site-footer-gh {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: rgba(255, 255, 255, 0.45);
-    text-decoration: none;
-    transition: color 80ms;
-  }
-
-  .site-footer-gh:hover {
-    color: var(--primary);
-    text-decoration: none;
   }
 </style>

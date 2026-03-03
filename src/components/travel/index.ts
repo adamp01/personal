@@ -1,5 +1,4 @@
-export { default as ImageBase } from "./ImageBase.astro";
-export { default as HeroImage } from "./HeroImage.astro";
+export { default as TripCard } from "./TripCard.astro";
 export { default as TripSidebar } from "./TripSidebar.astro";
 export { default as SidebarBox } from "./SidebarBox.astro";
 export { default as TripOverview } from "./TripOverview.astro";

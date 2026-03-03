@@ -1,7 +1,8 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import * as Post from "~/components/post";
+import { HeroImage } from "~/components/image";
+import { TripSidebar } from "~/components/travel";
 
 export async function getStaticPaths() {
   const travels = await getCollection("travels");
@@ -28,13 +29,13 @@ const { Content } = await entry.render();
       <article class="prose trip-prose">
         <Content
           components={{
-            HeroImage: Post.HeroImage,
+            HeroImage,
           }}
         />
       </article>
 
       <aside class="trip-sidebar-col">
-        <Post.TripSidebar entry={entry} />
+        <TripSidebar entry={entry} />
       </aside>
     </div>
   </div>

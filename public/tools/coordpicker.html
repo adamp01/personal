@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>SVG Coordinate Picker</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 2rem;
+        background: #f9fafb;
+      }
+      h1 {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+      }
+      p {
+        color: #6b7280;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+      }
+      #controls {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+      input[type="text"] {
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+        padding: 0.375rem 0.75rem;
+        width: 320px;
+        font-size: 0.9rem;
+      }
+      button {
+        padding: 0.375rem 1rem;
+        border: none;
+        background: #3b82f6;
+        color: white;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+      #wrapper {
+        position: relative;
+        display: inline-block;
+      }
+      #map {
+        width: 400px;
+        height: 400px;
+        cursor: crosshair;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.75rem;
+        background: #eff6ff;
+        display: block;
+      }
+      #log {
+        margin-top: 1rem;
+        font-size: 0.85rem;
+        font-family: monospace;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      .entry {
+        padding: 0.15rem 0;
+      }
+      .entry button {
+        font-size: 0.75rem;
+        padding: 0 0.5rem;
+        margin-left: 0.5rem;
+        background: #e5e7eb;
+        color: #374151;
+        border-radius: 0.25rem;
+      }
+      #dot-layer {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>SVG Coordinate Picker</h1>
+    <p>
+      Click anywhere on the map to get 0–100 coordinates for use in
+      <code>regionPoints</code>.
+    </p>
+
+    <div id="controls">
+      <input
+        type="text"
+        id="svgUrl"
+        value="/maps/kerala.svg"
+        placeholder="/maps/kerala.svg"
+      />
+      <button onclick="loadMap()">Load</button>
+    </div>
+
+    <div id="wrapper">
+      <svg id="map" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <image
+          id="bg"
+          href="/maps/kerala.svg"
+          x="0"
+          y="0"
+          width="100"
+          height="100"
+        />
+      </svg>
+      <svg
+        id="dot-layer"
+        viewBox="0 0 100 100"
+        xmlns="http://www.w3.org/2000/svg"
+      ></svg>
+    </div>
+
+    <div id="log"><em>Click the map to log coordinates…</em></div>
+
+    <script>
+      const svg = document.getElementById("map");
+      const dotLayer = document.getElementById("dot-layer");
+      const log = document.getElementById("log");
+      const points = [];
+
+      function loadMap() {
+        const url = document.getElementById("svgUrl").value.trim();
+        document.getElementById("bg").setAttribute("href", url);
+        dotLayer.innerHTML = "";
+        log.innerHTML = "<em>Click the map to log coordinates…</em>";
+        points.length = 0;
+      }
+
+      svg.addEventListener("click", (e) => {
+        const pt = svg.createSVGPoint();
+        pt.x = e.clientX;
+        pt.y = e.clientY;
+        const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+        const x = +svgP.x.toFixed(1);
+        const y = +svgP.y.toFixed(1);
+
+        points.push({ x, y });
+        const idx = points.length - 1;
+
+        // Draw dot
+        const circle = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "circle",
+        );
+        circle.setAttribute("cx", x);
+        circle.setAttribute("cy", y);
+        circle.setAttribute("r", "1.5");
+        circle.setAttribute("fill", "#ef4444");
+        circle.setAttribute("stroke", "white");
+        circle.setAttribute("stroke-width", "0.5");
+        dotLayer.appendChild(circle);
+
+        const label = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "text",
+        );
+        label.setAttribute("x", x + 2);
+        label.setAttribute("y", y + 1);
+        label.setAttribute("font-size", "3");
+        label.setAttribute("fill", "#111");
+        label.textContent = `${idx + 1}`;
+        dotLayer.appendChild(label);
+
+        // Log entry
+        if (log.querySelector("em")) log.innerHTML = "";
+        const entry = document.createElement("div");
+        entry.className = "entry";
+        entry.innerHTML = `<strong>#${idx + 1}</strong>  x: ${x}, y: ${y}
+        <button onclick="copyYaml(${idx})">copy YAML</button>
+        <button onclick="copyJson(${idx})">copy JSON</button>`;
+        log.appendChild(entry);
+      });
+
+      function copyYaml(i) {
+        const { x, y } = points[i];
+        navigator.clipboard.writeText(
+          `  - name: "POI ${i + 1}"\n    x: ${x}\n    y: ${y}`,
+        );
+      }
+      function copyJson(i) {
+        const { x, y } = points[i];
+        navigator.clipboard.writeText(`{ "x": ${x}, "y": ${y} }`);
+      }
+    </script>
+  </body>
+</html>

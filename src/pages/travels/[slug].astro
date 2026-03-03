@@ -1,0 +1,88 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import * as Post from "../../components/post";
+
+export async function getStaticPaths() {
+  const travels = await getCollection("travels");
+  return travels.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const data = entry.data;
+
+const { Content } = await entry.render();
+---
+
+<BaseLayout title={`${data.title} – My Travel Journal`}>
+  <div class="container">
+    <header class="page-header">
+      <div class="post-eyebrow">
+        <a href="/travels" class="back-link">&larr; All travels</a>
+      </div>
+      <h1>{data.title}</h1>
+    </header>
+
+    <div class="trip-layout">
+      <article class="prose trip-prose">
+        <Content
+          components={{
+            HeroImage: Post.HeroImage,
+          }}
+        />
+      </article>
+
+      <aside class="trip-sidebar-col">
+        <Post.TripSidebar entry={entry} />
+      </aside>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .post-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .post-eyebrow .back-link {
+    margin-bottom: 0;
+    flex-shrink: 0;
+    color: var(--accent);
+  }
+
+  .post-eyebrow .trip-meta {
+    opacity: 0.7;
+  }
+
+  /* Hero spans full width above the two-column layout */
+  .hero-row {
+    margin-bottom: 2rem;
+  }
+
+  .trip-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 1.75fr);
+    gap: 2rem;
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .trip-layout {
+      grid-template-columns: 1fr;
+    }
+
+    /* Mobile order: sidebar first, prose second */
+    .trip-sidebar-col {
+      order: -1;
+    }
+    .trip-prose {
+      order: 1;
+    }
+  }
+</style>

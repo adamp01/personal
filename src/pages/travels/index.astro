@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import TripCard from "../../components/TripCard.astro";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import TripCard from "~/components/TripCard.astro";
 
 const travels = await getCollection("travels");
 travels.sort((a, b) => (a.data.dateStart < b.data.dateStart ? 1 : -1));

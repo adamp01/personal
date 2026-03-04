@@ -14,7 +14,7 @@ One of my favourite pieces of software engineering literature is "The Pragmatic 
   ambiguous, and instead prefer "horizontal development".
 </Note>
 
-The principal logic behind tracer bullets is to get some small, usable, testable chunk of the final system implemented quickly and visbily. A rather agile approach to development, one might think. It is generally agreed that complex systems evolve from simple systems that work, <a href="https://en.wikipedia.org/wiki/John_Gall_(author)#Gall's_law" target="\_blank" rel="noopener noreferrer" >Gall's law</a>, and as such when developing software we should be aiming to implment small working chunks that eventually evolve into a more complex feature or workflow.
+The principal logic behind tracer bullets is to get some small, usable, testable chunk of the final system implemented quickly and visbily. A rather agile approach to development, one might think. It is generally agreed that complex systems evolve from simple systems that work, <a href="https://en.wikipedia.org/wiki/John_Gall_(author)#Gall's_law" target="\_blank" rel="noopener noreferrer" >Gall's law</a>, and as such when developing software we should be aiming to implement small working chunks that eventually evolve into a more complex feature or workflow.
 
 ## Horizontal Development
 
@@ -32,7 +32,14 @@ A more horizontal approach would be instead to build a simple, working, end-to-e
 
 ## So what?
 
-At Ben we are trying to instill the mentality of horizontal development into the engineering team. Even within a couple of weeks we have seen noticeable impact on our productivity:
+At Ben developers some developers were already using a horizontal development approach, however many PRs would be produced that fit into one of two categories:
+
+- Vertical development, i.e. PR 1: Models, PR 2: Application logic, PR 3: View logic
+- Complex feature, i.e. 1-2k line PR with a full, complex feature with partially tested edge cases
+
+The main problem with vertical development is as outlined above, it's hard to see how the different pieces link together until you reach the final PR which "turns on" the feature. The problem with big PRs is that they are difficult to get all the relevant context into your head which makes reviewing more difficult and makes it far easier for edge cases to slip through. They also take more time to create, more time to review and delay getting the thing into the hands of the person they are supposed to help.
+
+Now, we are trying to instill the mentality of horizontal development into the engineering team. Even within a couple of weeks we have seen noticeable impact on our productivity:
 
 - Lower average PR size
 - Shorter duration in review

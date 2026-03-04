@@ -40,4 +40,15 @@ const travels = defineCollection({
   }),
 });
 
-export const collections = { travels };
+const thoughts = defineCollection({
+  type: "content",
+  schema: z.object({
+    title: z.string(),
+    date: z.string().date(),
+    categories: z.array(z.string()).default([]),
+    coverImage: z.string().optional(),
+    featured: z.boolean().default(false),
+  }),
+});
+
+export const collections = { travels, thoughts };

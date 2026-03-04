@@ -1,0 +1,116 @@
+---
+import type { GetStaticPathsOptions } from "astro";
+import { getCollection } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import ThoughtCard from "~/components/thoughts/ThoughtCard.astro";
+import { getExcerpt } from "~/utils/excerpt";
+
+export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
+  const posts = await getCollection("thoughts");
+  posts.sort((a, b) => (a.data.date < b.data.date ? 1 : -1));
+  return paginate(posts, { pageSize: 9 });
+}
+
+const { page } = Astro.props;
+---
+
+<BaseLayout title="Thoughts – Adam Wood">
+  <div class="container">
+    <header class="page-header">
+      <p class="section-label">All thoughts</p>
+      <h1>Thoughts</h1>
+    </header>
+
+    <div class="thought-grid">
+      {
+        page.data.map((entry) => (
+          <ThoughtCard
+            slug={entry.slug}
+            title={entry.data.title}
+            date={entry.data.date}
+            excerpt={getExcerpt(entry.body, 180)}
+            categories={entry.data.categories}
+          />
+        ))
+      }
+    </div>
+
+    {
+      page.lastPage > 1 && (
+        <nav class="pagination" aria-label="Pagination">
+          {page.url.prev ? (
+            <a href={page.url.prev} class="pagination-btn">
+              &larr; Prev
+            </a>
+          ) : (
+            <span class="pagination-btn disabled">&larr; Prev</span>
+          )}
+
+          <span class="pagination-info">
+            {page.currentPage} / {page.lastPage}
+          </span>
+
+          {page.url.next ? (
+            <a href={page.url.next} class="pagination-btn">
+              Next &rarr;
+            </a>
+          ) : (
+            <span class="pagination-btn disabled">Next &rarr;</span>
+          )}
+        </nav>
+      )
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .thought-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+
+  .pagination-btn {
+    display: inline-block;
+    padding: 0.4rem 1.1rem;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border: var(--border);
+    color: var(--text);
+    text-decoration: none;
+    transition:
+      background 80ms,
+      color 80ms,
+      border-color 80ms;
+  }
+
+  .pagination-btn:not(.disabled):hover {
+    background: var(--secondary);
+    color: var(--bg);
+    border-color: var(--secondary);
+    text-decoration: none;
+  }
+
+  .pagination-btn.disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  .pagination-info {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+</style>

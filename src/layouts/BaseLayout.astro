@@ -37,10 +37,10 @@ const {
 <style is:global>
   /* ── Design tokens ─────────────────────────────────────────── */
   :root {
-    --text: #ffffff;
+    --text: #e8e8e8;
     --bg: #080b36;
     --primary: #ff22e5;
-    --secondary: #ffffff;
+    --secondary: #e8e8e8;
     --accent: #32c411;
 
     --border: 2px solid var(--primary);
@@ -64,7 +64,7 @@ const {
 
   html {
     font-family: var(--font-sans);
-    font-size: 16px;
+    font-size: 17px;
     background: var(--bg);
     color: var(--text);
     scroll-padding-top: calc(var(--nav-h) + 1rem);
@@ -121,7 +121,7 @@ const {
 
   /* ── Layout containers ─────────────────────────────────────── */
   .container {
-    max-width: 960px;
+    max-width: 70ch;
     margin: 0 auto;
     padding: 0.5rem 1.5rem 5rem;
   }
@@ -148,6 +148,12 @@ const {
   }
 
   /* ── Article prose ─────────────────────────────────────────── */
+  .prose {
+    max-width: 70ch;
+    font-size: 1.0588rem; /* ~18px at 17px base */
+    line-height: 1.8;
+  }
+
   .prose h2,
   .prose h3 {
     margin-top: 2rem;
@@ -158,6 +164,27 @@ const {
 
   .prose p {
     margin-bottom: 1.75rem;
+  }
+
+  .prose p + ul,
+  .prose p + ol {
+    margin-top: -1rem;
+  }
+
+  .prose ul,
+  .prose ol {
+    padding-left: 1.25rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+
+  .prose li {
+    margin-bottom: 0.35rem;
+    line-height: 1.8;
+  }
+
+  .prose li:last-child {
+    margin-bottom: 0;
   }
 
   .prose img {

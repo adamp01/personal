@@ -1,0 +1,42 @@
+---
+title: "On Complex Software"
+date: "2026-03-04"
+categories: ["software engineering"]
+featured: true
+---
+
+## Tracer Bullets
+
+One of my favourite pieces of software engineering literature is "The Pragmatic Programmer", similar to a lot of software enthusiasts. It has a lot of value on both initial and subsequent reads and I constantly find myself going back to it to see if I can pick up anything that I may have missed the last time. On my most recent foray into the depths of pragmatism, the concept of "tracer bullets" really stood out.
+
+<Note>
+  I actually dislike the term "tracer bullets", because I feel it's too
+  ambiguous, and instead prefer "horizontal development".
+</Note>
+
+The principal logic behind tracer bullets is to get some small, usable, testable chunk of the final system implemented quickly and visbily. A rather agile approach to development, one might think. It is generally agreed that complex systems evolve from simple systems that work, <a href="https://en.wikipedia.org/wiki/John_Gall_(author)#Gall's_law" target="\_blank" rel="noopener noreferrer" >Gall's law</a>, and as such when developing software we should be aiming to implment small working chunks that eventually evolve into a more complex feature or workflow.
+
+## Horizontal Development
+
+Horizontal development removes a little of the ambiguity, and warlike connotations, from tracer bullets. When building software we typically have various verticals that require implementing:
+
+- User interface
+- Authorization
+- View logic
+- Application logic
+- Data model
+- Database
+
+As a developer you could chunk up your work into these verticals, so you have one pull request (PR) for your data models, one for your application logic, one for your views etc. This would be "vertical development". I argue that this method of development is very restricting and even damaging, as your feedback loop becomes unnecessarily long and code reviews are more difficult as the reviewer cannot see how the data model will actually be used or how application logic ties into a view.
+A more horizontal approach would be instead to build a simple, working, end-to-end flow that users, QA, product etc. can begin testing right away. Subsequent PRs can then introduce more complicated functionality on top of the already tested, simple base.
+
+## So what?
+
+At Ben we are trying to instill the mentality of horizontal development into the engineering team. Even within a couple of weeks we have seen noticeable impact on our productivity:
+
+- Lower average PR size
+- Shorter duration in review
+- Lower regression rate
+- Higher feature uptake
+
+I really believe that this should be a core tenet of any development team that wants to build quality software, and whenever one is in doubt about how to implement a new feature or try to improve legacy code think back to Gall's law.

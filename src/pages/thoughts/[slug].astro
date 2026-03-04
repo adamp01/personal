@@ -1,0 +1,93 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { HeroImage } from "~/components/image";
+import Note from "~/components/thoughts/Note.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("thoughts");
+  return posts.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const data = entry.data;
+
+const formatted = new Date(data.date).toLocaleDateString("en-GB", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+
+const { Content } = await entry.render();
+---
+
+<BaseLayout title={`${data.title} – Adam Wood`}>
+  <div class="container">
+    <header class="post-header page-header">
+      <a href="/thoughts" class="section-label back-link">&larr; All thoughts</a
+      >
+      <h1>{data.title}</h1>
+      <div class="post-meta">
+        <span class="post-date">{formatted}</span>
+        {
+          data.categories.length > 0 && (
+            <ul class="post-categories">
+              {data.categories.map((cat) => (
+                <li>{cat}</li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+    </header>
+
+    <article class="prose">
+      <Content components={{ HeroImage, Note }} />
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  .back-link {
+    text-decoration: none;
+    display: block;
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .post-date {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .post-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .post-categories li {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+  }
+</style>

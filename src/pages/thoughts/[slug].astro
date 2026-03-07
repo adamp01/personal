@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { HeroImage } from "~/components/image";
 import Note from "~/components/thoughts/Note.astro";
+import Mermaid from "~/components/thoughts/Mermaid.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("thoughts");
@@ -45,7 +46,7 @@ const { Content } = await entry.render();
     </header>
 
     <article class="prose">
-      <Content components={{ HeroImage, Note }} />
+      <Content components={{ HeroImage, Note, Mermaid }} />
     </article>
   </div>
 </BaseLayout>

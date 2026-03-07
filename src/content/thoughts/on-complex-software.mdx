@@ -7,18 +7,24 @@ featured: true
 
 ## Tracer Bullets
 
-One of my favourite pieces of software engineering literature is "The Pragmatic Programmer", similar to a lot of software enthusiasts. It has a lot of value on both initial and subsequent reads and I constantly find myself going back to it to see if I can pick up anything that I may have missed the last time. On my most recent foray into the depths of pragmatism, the concept of "tracer bullets" really stood out.
+One of the most common failure modes in software development is building large pieces of a system in isolation, only to discover late in the process that they don’t quite fit together or they don't actually solve the problem that you set out to solve.
+
+An idea that helps avoid this comes from The Pragmatic Programmer: tracer bullets.
+
+I’ve read the book several times over the years, and on a recent reread this concept stood out to me again because it maps closely to a development style I’ve found increasingly valuable in practice — building small end-to-end slices of a system rather than large isolated layers.
 
 <Note>
-  I actually dislike the term "tracer bullets", because I feel it's too
-  ambiguous, and instead prefer "horizontal development".
+  The term “tracer bullets” has always felt a little abstract to me. In
+  practice, what the book is describing is very close to what many teams today
+  call vertical slices or end-to-end slices of a system. I’ll occasionally refer
+  to it in those terms, but the underlying idea is similar.
 </Note>
 
-The principal logic behind tracer bullets is to get some small, usable, testable chunk of the final system implemented quickly and visbily. A rather agile approach to development, one might think. It is generally agreed that complex systems evolve from simple systems that work, <a href="https://en.wikipedia.org/wiki/John_Gall_(author)#Gall's_law" target="\_blank" rel="noopener noreferrer" >Gall's law</a>, and as such when developing software we should be aiming to implement small working chunks that eventually evolve into a more complex feature or workflow.
+The principal logic behind tracer bullets is to get some small, usable, testable chunk of the final system implemented quickly and visbily. A rather agile approach to development, one might think. It is generally agreed that complex systems evolve from simple systems that work, <a href="https://en.wikipedia.org/wiki/John_Gall_(author)#Gall's_law" target="\_blank" rel="noopener noreferrer" >Gall's law</a>, and as such when developing software we should be aiming to implement small working chunks that eventually evolve into more complex features or workflows.
 
-## Horizontal Development
+## Vertical Slices
 
-Horizontal development removes a little of the ambiguity, and warlike connotations, from tracer bullets. When building software we typically have various verticals that require implementing:
+When building software we typically have various layers that require implementing:
 
 - User interface
 - Authorization
@@ -27,23 +33,79 @@ Horizontal development removes a little of the ambiguity, and warlike connotatio
 - Data model
 - Database
 
-As a developer you could chunk up your work into these verticals, so you have one pull request (PR) for your data models, one for your application logic, one for your views etc. This would be "vertical development". I argue that this method of development is very restricting and even damaging, as your feedback loop becomes unnecessarily long and code reviews are more difficult as the reviewer cannot see how the data model will actually be used or how application logic ties into a view.
-A more horizontal approach would be instead to build a simple, working, end-to-end flow that users, QA, product etc. can begin testing right away. Subsequent PRs can then introduce more complicated functionality on top of the already tested, simple base.
+The difference becomes clearer if you visualise how work moves through the system. One way to structure work is to build these layers independently. For example:
+
+- PR 1: Data models
+- PR 2: Application logic
+- PR 3: View logic
+
+This is effectively horizontal development — building out layers of the system in isolation.
+
+I would argue that this approach is often unnecessarily restrictive. Feedback loops become longer and code reviews become harder, because the reviewer cannot see how the data model will actually be used or how application logic ties into a view. Everything only really makes sense once the final PR “turns on” the feature.
+
+A more pragmatic approach is to build a vertical slice instead: a small, working, end-to-end flow that passes through each layer of the system. It may be simple and incomplete, but it works.
+
+<Mermaid diagram={`
+flowchart LR
+
+subgraph PR1["PR 1: Minimal End-to-End Slice"]
+A[Database Model]
+B[Application Logic]
+C[API / View]
+D[Simple UI]
+end
+
+A --> B --> C --> D
+
+subgraph PR2["PR 2: Extend Behaviour"]
+E[Validation]
+F[Permissions]
+end
+
+C --> E
+B --> F
+
+subgraph PR3["PR 3: Improve Feature"]
+G[Edge Cases]
+H[Better UX]
+end
+
+E --> G
+D --> H
+`} />
+
+Users, QA, and product can start interacting with it immediately, and smaller, more easily reviewed subsequent PRs can incrementally introduce more complex behaviour on top of a tested base. This is pretty close to the idea of tracer bullets outlined in "The Pragmatic Programmer": establish a working path through the system early on and then refine and expand over time.
 
 ## So what?
 
-At Ben developers some developers were already using a horizontal development approach, however many PRs would be produced that fit into one of two categories:
+At Ben some developers were already working in this way, however many PRs would still fall into one of two categories:
 
-- Vertical development, i.e. PR 1: Models, PR 2: Application logic, PR 3: View logic
-- Complex feature, i.e. 1-2k line PR with a full, complex feature with partially tested edge cases
+1. Layered development
 
-The main problem with vertical development is as outlined above, it's hard to see how the different pieces link together until you reach the final PR which "turns on" the feature. The problem with big PRs is that they are difficult to get all the relevant context into your head which makes reviewing more difficult and makes it far easier for edge cases to slip through. They also take more time to create, more time to review and delay getting the thing into the hands of the person they are supposed to help.
+- PR 1: Models
+- PR 2: Application logic
+- PR 3: View logic
 
-Now, we are trying to instill the mentality of horizontal development into the engineering team. Even within a couple of weeks we have seen noticeable impact on our productivity:
+2. Large feature PRs
+
+- A 1–2k line PR containing an entire complex feature with partially tested edge cases.
+
+The problem with layered development is that it’s difficult to see how the different pieces link together until the final PR. The problem with very large PRs is that it’s hard to hold all the relevant context in your head at once. This makes reviewing more difficult and makes it easier for edge cases to slip through.
+
+Large PRs also take longer to create, longer to review, and ultimately delay getting the feature into the hands of the person it is supposed to help.
+
+Now, we are trying to instill the mentality of vertical slice development into the engineering team. Even within a couple of weeks we have seen noticeable impact on our productivity:
 
 - Lower average PR size
-- Shorter duration in review
+- Shorter time spent in review
 - Lower regression rate
-- Higher feature uptake
+- Faster feature uptake
 
-I really believe that this should be a core tenet of any development team that wants to build quality software, and whenever one is in doubt about how to implement a new feature or try to improve legacy code think back to Gall's law.
+In practice, tracer bullets are less about methodology and more about mindset. Instead of trying to design and implement large parts of a system in isolation, aim to get something small working across the entire stack as early as possible. You'll get a better read on whether your idea will actually solve the problem that needs addressing before going too far down the rabbit hole. Once that thin slice exists, the rest of the system can grow around it in small, understandable increments.
+
+Whenever I’m unsure how to approach a new feature or untangle some legacy code, I try to fall back on a simple question:
+What is the smallest end-to-end slice of this system that could actually work?
+
+More often than not, building that slice first leads to better architecture, faster feedback, and far simpler code.
+
+Or, to paraphrase John Gall: complex systems evolve from simple systems that work.

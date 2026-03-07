@@ -1,0 +1,50 @@
+---
+interface Props {
+  diagram: string;
+}
+
+const { diagram } = Astro.props;
+---
+
+<figure class="mermaid-figure">
+  <pre class="mermaid">{diagram}</pre>
+</figure>
+
+<script>
+  import mermaid from "mermaid";
+
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: "neutral",
+    fontFamily: "inherit",
+    fontSize: 18,
+  });
+
+  async function renderDiagrams() {
+    await mermaid.run({ querySelector: ".mermaid" });
+
+    document.querySelectorAll(".mermaid-figure svg").forEach((svg) => {
+      svg.removeAttribute("width");
+      svg.removeAttribute("height");
+      svg.setAttribute("width", "100%");
+      svg.setAttribute("height", "auto");
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", renderDiagrams);
+  } else {
+    renderDiagrams();
+  }
+</script>
+
+<style>
+  .mermaid-figure {
+    margin: 0.5rem 0;
+  }
+
+  .mermaid-figure :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+</style>

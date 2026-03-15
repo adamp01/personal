@@ -1,23 +1,22 @@
 ---
-import ImageBase from "../image/ImageBase.astro";
+import ImageBase from "~/components/image/ImageBase.astro";
+import { getMonthLabel } from "~/utils/date";
 
 interface Props {
   slug: string;
   title: string;
   countries: string[];
-  dateStart: string;
-  dateEnd: string;
+  year: number;
+  months: string[];
+  days: number;
   rating?: number;
   coverImage?: string;
 }
 
-const { slug, title, countries, dateStart, dateEnd, rating, coverImage } =
+const { slug, title, countries, year, months, days, rating, coverImage } =
   Astro.props;
 
-const duration =
-  (new Date(dateEnd).getTime() - new Date(dateStart).getTime()) /
-    (1000 * 60 * 60 * 24) +
-  1;
+const monthLabel = getMonthLabel(months, year, true);
 ---
 
 <article class="trip-card">
@@ -30,7 +29,7 @@ const duration =
     <div class="trip-card-body">
       <h2>{title}</h2>
       <p class="trip-meta">
-        {countries.join(", ")} &middot; {duration} days
+        {countries.join(", ")} &middot; {monthLabel} &middot; {days} days
         {rating && <span> &middot; {rating} &#9733;</span>}
       </p>
     </div>

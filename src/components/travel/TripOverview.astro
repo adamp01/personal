@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import SidebarBox from "./SidebarBox.astro";
+import { getMonthLabel } from "~/utils/date";
 
 type TravelData = CollectionEntry<"travels">["data"];
 
@@ -10,21 +11,18 @@ interface Props {
 
 const { data } = Astro.props;
 
-const durationDays =
-  (new Date(data.dateEnd).getTime() - new Date(data.dateStart).getTime()) /
-    (1000 * 60 * 60 * 24) +
-  1;
+const monthLabel = getMonthLabel(data.months, data.year);
 ---
 
 <SidebarBox title="Trip overview">
   <dl>
     <div>
-      <dt>Dates</dt>
-      <dd>{data.dateStart} &rarr; {data.dateEnd}</dd>
+      <dt>When</dt>
+      <dd>{monthLabel}</dd>
     </div>
     <div>
       <dt>Duration</dt>
-      <dd>{durationDays} days</dd>
+      <dd>{data.days} days</dd>
     </div>
     <div>
       <dt>Countries</dt>

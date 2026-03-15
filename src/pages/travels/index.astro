@@ -4,7 +4,7 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 import TripCard from "~/components/travel/TripCard.astro";
 
 const travels = await getCollection("travels");
-travels.sort((a, b) => (a.data.dateStart < b.data.dateStart ? 1 : -1));
+travels.sort((a, b) => b.data.year - a.data.year);
 ---
 
 <BaseLayout title="Travels – Adam Wood">
@@ -21,8 +21,9 @@ travels.sort((a, b) => (a.data.dateStart < b.data.dateStart ? 1 : -1));
             slug={entry.id}
             title={entry.data.title}
             countries={entry.data.countries}
-            dateStart={entry.data.dateStart}
-            dateEnd={entry.data.dateEnd}
+            year={entry.data.year}
+            months={entry.data.months}
+            days={entry.data.days}
             rating={entry.data.rating}
             coverImage={entry.data.coverImage}
           />

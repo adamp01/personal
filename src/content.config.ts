@@ -9,8 +9,9 @@ const travels = defineCollection({
   }),
   schema: z.object({
     title: z.string(),
-    dateStart: z.string().date(),
-    dateEnd: z.string().date(),
+    year: z.number(),
+    months: z.array(z.string()),
+    days: z.number(),
     countries: z.array(z.string()),
     cities: z
       .array(

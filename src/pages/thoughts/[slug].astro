@@ -1,5 +1,5 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { HeroImage } from "~/components/image";
 import Note from "~/components/thoughts/Note.astro";
@@ -8,7 +8,7 @@ import Mermaid from "~/components/thoughts/Mermaid.astro";
 export async function getStaticPaths() {
   const posts = await getCollection("thoughts");
   return posts.map((entry) => ({
-    params: { slug: entry.slug },
+    params: { slug: entry.id },
     props: { entry },
   }));
 }
@@ -22,7 +22,7 @@ const formatted = new Date(data.date).toLocaleDateString("en-GB", {
   year: "numeric",
 });
 
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 ---
 
 <BaseLayout title={`${data.title} – Adam Wood`}>

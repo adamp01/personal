@@ -18,7 +18,7 @@ travels.sort((a, b) => (a.data.dateStart < b.data.dateStart ? 1 : -1));
       {
         travels.map((entry) => (
           <TripCard
-            slug={entry.slug}
+            slug={entry.id}
             title={entry.data.title}
             countries={entry.data.countries}
             dateStart={entry.data.dateStart}

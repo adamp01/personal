@@ -21,6 +21,12 @@ const { diagram } = Astro.props;
   });
 
   async function renderDiagrams() {
+    // Reset any elements already processed by a previous render so mermaid
+    // will re-render them after a View Transition navigation.
+    document.querySelectorAll(".mermaid[data-processed]").forEach((el) => {
+      el.removeAttribute("data-processed");
+    });
+
     await mermaid.run({ querySelector: ".mermaid" });
 
     document.querySelectorAll(".mermaid-figure svg").forEach((svg) => {
@@ -31,11 +37,9 @@ const { diagram } = Astro.props;
     });
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", renderDiagrams);
-  } else {
-    renderDiagrams();
-  }
+  // astro:page-load fires on every navigation (including initial load) when
+  // the ClientRouter is active, replacing the DOMContentLoaded approach.
+  document.addEventListener("astro:page-load", renderDiagrams);
 </script>
 
 <style>

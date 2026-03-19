@@ -1,0 +1,53 @@
+---
+title: "On Hot Path Model Migrations"
+date: "2026-03-19"
+categories: ["software engineering"]
+featured: false
+---
+
+## The Problem
+
+At Ben, when an employee enrols into a benefit we create an `Enrolment` record. Part of this involves capturing user selections, the inputs from highly customisable forms that exist because the employee benefits space, insurance especially, lacks any real standardisation.
+
+We won't talk about how we got here, partly because it predates my time at the company and partly because speed was prioritised over long-term design. The outcome was that user selections ended up stored on a polymorphic sub-model: `ModularEnrolmentAdditionalInfo`. To reach them you needed two joins: `Enrolment → PolymorphicParent → ModularEnrolmentAdditionalInfo`.
+
+There was a slight performance cost, but that wasn't really the issue. How often does someone come into our platform to change their benefit selections? And when they do, do you think they care whether it takes 300ms or 2s as long as it's correct?
+
+The bigger problem was confusion. We use Django and a lot of internal operations work goes through the Django admin interface. We also use django-simple-history, which provides a diff-level audit trail of record changes. Because user selections lived on a separate table, questions like "X made a change to this enrolment but their selections didn't change" were a regular occurrence, except they had changed, just not in the history tab of the `Enrolment` table everyone was looking at.
+
+The application code consequences were worse. Two closely coupled models that could each be saved independently, with engineers reasonably assuming they would always be updated together. That assumption was wrong in numerous places. Bugs would surface in "well-tested" code and what looked like a quick half day job would quietly become half a day implementing, half a day debugging and half a day cleaning up.
+
+Testing was its own problem. Our enrolment factory had to spin up three model instances, `Enrolment`, the polymorphic parent, and `ModularEnrolmentAdditionalInfo`. Doesn't sound like much, but across thousands of tests the overhead mounts. Or consider the engineer who, quite reasonably, tries `select_related` to avoid N+1 queries across enrolments that need both rates and user selections, only to hit an obscure error because their query pulled the polymorphic parent rather than the child they were after.
+
+In total this was costing us hours per week across the organisation.
+
+## The Migration
+
+`Enrolment` is one of our hottest tables and arguably the most important in the system. So the migration needed to be zero downtime, zero data loss, with a clean rollback available at every stage. Spoiler: it was.
+
+<Mermaid diagram={`
+flowchart LR
+  A["Add columns\n(hidden)"]
+  B["Dual write\n+ monitor"]
+  C["Swap reads"]
+  D["Remove\ndual write"]
+  E["Archive\nold model"]
+
+A --> B --> C --> D --> E
+`} />
+
+The first step was to add the new user selection columns directly to `Enrolment` without surfacing them anywhere. Once those were in, every write to `ModularEnrolmentAdditionalInfo` was updated to also write to the new columns. To make the eventual cleanup easier I consolidated all ~20 write locations behind a `set_user_selections()` method, so removing the old writes later meant changing one place rather than hunting across the codebase.
+
+With dual-writing in place I added a monitor to compare the new column values against the old model. It caught a couple of edge cases, nothing critical, but exactly the kind of thing that would have caused a quiet regression otherwise. After about a week with no discrepancies I switched reads over to the new columns. Still dual-writing at this point, so rolling back was a one-line change. I did consider adding a feature flag so that I could rollback instantly with no code change but deemed it unnecessary. The dual write was the hard bit and swapping the reads was trivial. I did do a small refactor to add `get_user_selections()` so the read swap was a one-liner.
+
+A bit more monitoring, then the dual-write logic was ripped out of `set_user_selections()`. The old model stayed in the codebase with a deprecation flag so internal users could still access historical user selection diffs through the Django admin. We decided against backfilling historical selections onto `Enrolment` after discussing it with stakeholders, the vast majority of investigative work involving user selection history happens within a t-2 week window, so it wasn't worth the effort.
+
+## Was it worth it?
+
+- Removed ~2k lines of code
+- 0 user selection-related queries to engineering in the two months since, down from ~5 per week
+- Simpler onboarding for engineers learning the enrolment and user selection space
+- Small performance gains across standard enrolment flows, larger gains in unoptimised bulk operations
+- ~30 seconds off total test suite duration
+
+The performance side was a nice bonus. The more meaningful return was just that nobody gets confused about where user selections live anymore.

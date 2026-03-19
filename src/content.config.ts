@@ -1,5 +1,10 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
 import { glob } from "astro/loaders";
+
+export const THOUGHT_CATEGORIES = ["software engineering"] as const;
+
+export type ThoughtCategory = (typeof THOUGHT_CATEGORIES)[number];
 
 const travels = defineCollection({
   loader: glob({
@@ -54,8 +59,8 @@ const thoughts = defineCollection({
   }),
   schema: z.object({
     title: z.string(),
-    date: z.string().date(),
-    categories: z.array(z.string()).default([]),
+    date: z.iso.date(),
+    categories: z.array(z.enum(THOUGHT_CATEGORIES)).default([]),
     coverImage: z.string().optional(),
     featured: z.boolean().default(false),
   }),

@@ -15,17 +15,21 @@ const path = Astro.url.pathname;
     </a>
 
     <nav class="topnav-links" id="topnav-links" aria-label="Main navigation">
-      <a href="/" class:list={["topnav-link", { active: path === "/" }]}
-        >About</a
+      <a
+        href="/"
+        class:list={["topnav-link", { active: path === "/" }]}
+        aria-current={path === "/" ? "page" : undefined}>About</a
       >
       <a
         href="/thoughts"
         class:list={["topnav-link", { active: path.startsWith("/thoughts") }]}
+        aria-current={path.startsWith("/thoughts") ? "page" : undefined}
         >Thoughts</a
       >
       <a
         href="/travels"
         class:list={["topnav-link", { active: path.startsWith("/travels") }]}
+        aria-current={path.startsWith("/travels") ? "page" : undefined}
         >Travels</a
       >
     </nav>
@@ -37,9 +41,9 @@ const path = Astro.url.pathname;
       aria-expanded="false"
       aria-controls="topnav-links"
     >
-      <span></span>
-      <span></span>
-      <span></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
     </button>
   </div>
 </header>
@@ -49,19 +53,34 @@ const path = Astro.url.pathname;
     const burger = document.getElementById("topnav-burger")!;
     const links = document.getElementById("topnav-links")!;
 
+    function openMenu() {
+      links.classList.add("is-open");
+      burger.classList.add("is-open");
+      burger.setAttribute("aria-expanded", "true");
+      const firstLink = links.querySelector<HTMLElement>("a");
+      firstLink?.focus();
+    }
+
+    function closeMenu(returnFocus = true) {
+      links.classList.remove("is-open");
+      burger.classList.remove("is-open");
+      burger.setAttribute("aria-expanded", "false");
+      if (returnFocus) burger.focus();
+    }
+
     burger.addEventListener("click", () => {
-      const open = links.classList.toggle("is-open");
-      burger.setAttribute("aria-expanded", String(open));
-      burger.classList.toggle("is-open", open);
+      const isOpen = links.classList.contains("is-open");
+      isOpen ? closeMenu() : openMenu();
     });
 
-    // Close menu when a link is tapped on mobile
+    // Close on Escape
+    links.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeMenu();
+    });
+
+    // Close menu when a link is activated on mobile
     links.querySelectorAll("a").forEach((a) => {
-      a.addEventListener("click", () => {
-        links.classList.remove("is-open");
-        burger.classList.remove("is-open");
-        burger.setAttribute("aria-expanded", "false");
-      });
+      a.addEventListener("click", () => closeMenu(false));
     });
   }
 

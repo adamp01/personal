@@ -24,9 +24,10 @@ const {
     <ClientRouter />
   </head>
   <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <Navbar />
 
-    <main class="page-content">
+    <main id="main-content" class="page-content">
       <slot />
     </main>
 
@@ -52,6 +53,25 @@ const {
 
     --font-sans: "Inter", system-ui, sans-serif;
     --font-mono: "JetBrains Mono", monospace;
+  }
+
+  /* ── Skip link ─────────────────────────────────────────────── */
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 1rem;
+    z-index: 9999;
+    padding: 0.5rem 1rem;
+    background: var(--primary);
+    color: var(--bg);
+    font-weight: 800;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: top 0ms;
+  }
+
+  .skip-link:focus {
+    top: 1rem;
   }
 
   /* ── Reset / base ──────────────────────────────────────────── */
@@ -118,6 +138,23 @@ const {
   a:hover {
     text-decoration: underline;
     text-underline-offset: 3px;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 
   /* ── Layout containers ─────────────────────────────────────── */

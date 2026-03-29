@@ -11,11 +11,21 @@ interface Props {
 }
 
 const { regionSvg, regionRoutes, regionPoints } = Astro.props;
+
+const placeNames = regionPoints.map((p) => p.name).join(", ");
+const mapTitle = placeNames ? `Route map showing: ${placeNames}` : "Route map";
+const svgTitleId = `route-map-title-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
 <SidebarBox title="Route">
   <div class="region-map-wrap">
-    <svg viewBox="0 0 100 100" class="region-map">
+    <svg
+      viewBox="0 0 100 100"
+      class="region-map"
+      role="img"
+      aria-labelledby={svgTitleId}
+    >
+      <title id={svgTitleId}>{mapTitle}</title>
       <defs>
         <marker
           id="arrowhead"

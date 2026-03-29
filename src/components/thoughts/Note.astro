@@ -4,10 +4,11 @@ interface Props {
 }
 
 const { label = "Note" } = Astro.props;
+const labelId = `note-label-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
-<aside class="note">
-  <span class="note-label">{label}</span>
+<aside class="note" aria-labelledby={labelId}>
+  <span class="note-label" id={labelId}>{label}</span>
   <div class="note-body">
     <slot />
   </div>

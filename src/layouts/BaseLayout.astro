@@ -53,6 +53,19 @@ const {
 
     --font-sans: "Inter", system-ui, sans-serif;
     --font-mono: "JetBrains Mono", monospace;
+
+    --selection-bg: rgba(255, 34, 229, 0.612);
+    --selection-color: var(--bg);
+  }
+
+  ::selection {
+    background: var(--selection-bg);
+    color: var(--selection-color);
+  }
+
+  ::-moz-selection {
+    background: var(--selection-bg);
+    color: var(--selection-color);
   }
 
   /* ── Skip link ─────────────────────────────────────────────── */
@@ -193,6 +206,27 @@ const {
     background: rgba(255, 34, 229, 0.12);
     border-radius: 0;
     padding: 0.15em 0.4em;
+  }
+
+  /* ── Code blocks ────────────────────────────────────────────── */
+  pre.astro-code {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.7;
+    padding: 1rem 1.25rem;
+    border: var(--border);
+    box-shadow: var(--shadow-sm);
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    border-radius: 0;
+  }
+
+  pre.astro-code code {
+    font-family: inherit;
+    font-size: inherit;
+    background: none;
+    padding: 0;
+    color: inherit;
   }
 
   /* ── Article prose ─────────────────────────────────────────── */

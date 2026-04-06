@@ -1,0 +1,105 @@
+---
+title: "On Splitting a Django Monolith"
+date: "2026-04-05"
+categories: ["software engineering"]
+featured: false
+---
+
+## The Mega-App
+
+When I started at Ben, almost all backend code lived in a single Django app. One app, one migration history, one directory for every model, view, service, serializer, and repository across the entire product.
+
+The problems this creates are predictable. Poor separation of concerns means discoverability is low and code reuse approaches zero, because the function you could reuse is buried in a file you'd never think to look in, and you only find it after writing your own version. The result is five implementations of the same thing, each slightly different, each with its own tests, each with its own bugs. A fix applied to one code path doesn't reach the others.
+
+The directory structure reflected this. The services directory had 80-plus top-level files. Some were narrowly scoped. Others were enormous: one file covering the benefits domain was around 10,000 lines, and contained five different implementations of opening an enrolment window, spread thousands of lines apart. Reading through it felt like archaeological excavation, each layer of soil revealing an older civilisation of half-considered abstractions stacked on top of each other.
+
+Migration conflicts were their own ongoing cost. One migration history for the whole product means any two engineers modifying a model at the same time will collide. The routine is familiar: rebase, regenerate migrations, push, hope nobody else merged before you. As team size increases this loop gets longer. By the time we tackled it, the migrations directory contained over 500 files.
+
+This is not to mention the cost of onboarding new engineers or, in this brave new world, agentic developers. The lack of any clear patterns meant that everything was open to interpretation and it was incredibly challenging to determine "how do engineers at Ben write code". That combination of duplication, migration contention, and low discoverability was what pushed me to propose a refactor.
+
+## Getting Buy-in
+
+At Ben we write RFCs. A lot get written, fewer get accepted, fewer still actually ship. I'd been building the case gradually, tying specific bugs and slow-moving incidents back to the architecture as their root cause. The usual arguments, lower bug rates, faster onboarding, higher velocity, were all true but hadn't landed with enough urgency.
+
+The argument that finally moved the needle was AI. The codebase was so sprawling and inconsistent that coding agents had no coherent pattern to follow. They'd pull from whichever code they could find, which meant mixing the well-considered parts with the legacy mess and producing something in between. Not wrong enough to obviously fail, not right enough to trust.
+
+To make this concrete I ran a quick PoC: I split out part of enrolment into a clean domain structure and asked an AI agent to build on top of it. The output was noticeably more consistent and needed fewer corrections.
+
+That became the framing for sign-off. Not architecture for its own sake, but higher feature throughput with lower regression risk. Was that guaranteed? No, but it was directionally true enough, and the business's appetite for AI everywhere, all at once, made it an easy decision.
+
+## The Design
+
+I'm a fan of domain-driven design, and the [Kraken Technologies conventions](https://github.com/octoenergy/public-conventions) that Octopus Energy have open-sourced. We didn't go full use-case-per-file, but pure domain separation was the right middle ground for where we were.
+
+The two most natural domains in our platform are the benefit itself and the enrolment of an employee into that benefit. The principle I try to apply when drawing these lines is whether something is a real-world entity or a property of one. Almost everything in the benefits side of the product is either a benefit or something happening to a benefit, or an enrolment or something happening to an enrolment. Windows and eligibility rules could theoretically be their own apps, but they're closer to properties of a benefit than standalone entities. When in doubt, the question is whether the thing exists independently or only makes sense relative to something else.
+
+We kept the layered architecture we already had, data flowing client → view → serializer → service → repository → model → db. What changed was the granularity of the service layer. Rather than one enormous file covering every operation, each app gets a `services/` directory with one file per concern:
+
+```text
+benefits/
+  services/
+    eligibility.py
+    windows.py
+    price.py
+
+enrolments/
+  services/
+    enrol.py
+    unenrol.py
+    update.py
+```
+
+If you need to understand how benefit windows work, you open `windows.py`. If you need the enrolment flow, you open `enrol.py`. The structure tells you where to look.
+
+The full default app layout we landed on:
+
+```text
+<app>/
+  admin/
+  exceptions/
+  migrations/
+  models/
+  repositories/
+  serializers/
+  services/
+  tests/
+  types/
+  utils/
+  views/
+  apps.py
+  urls.py
+  celery_tasks.py
+  signals.py
+```
+
+I wasn't fully sold on this layout, it could still sprawl over time. A stricter use-case-by-use-case or feature-by-feature structure would probably age better, but I couldn't justify that scope then. The goal was a good-enough baseline that humans and AI could both navigate. We are not at the full target yet, but it did stop the worst of the spaghetti growth.
+
+## The Refactor
+
+Before moving any code to a new app, we had to make the existing code legible. A 10,000-line file is not something you can cleanly decompose from the outside without first understanding what's inside it.
+
+The services file was bad but at least it had a name that pointed you in a direction. The worst discovery was a views file that contained roughly 60% of all API endpoints for our employee-facing application, with a significant amount of service logic baked directly into the view handlers rather than delegated to a service layer. Hard to test, impossible to navigate, and completely opaque to anyone new to the codebase.
+
+So the initial pass was two steps. First, pull all the logic out of the views and into services, making the views thin. Second, once the logic lived in services, split those services by concern into domain-specific files: enrolment windows into one file, benefit pricing into another, eligibility into another, contacts and policy relations into another. No new apps yet, just shaping the existing code to match the domain structure we were aiming for.
+
+This approach also produced quick wins. Lots of duplicate code was removed, implementations and tests got tighter, and we fixed a few live bugs along the way.
+
+Once the internal structure was clean, moving to `benefits/` and `enrolments/` was mostly mechanical: copy directories, update imports, run tests. The hard part was model migration.
+
+## The Migration
+
+I wanted to avoid any database-level changes during the refactor. No table renames, no data movement. The db table for a model like `BenefitEnrolment` stays at its original location regardless of which Django app the model class lives in.
+
+In the new app's model, you set `db_table = "legacy_app_modelname"` in the `Meta` class, and `table_name = "legacy_app_historicalmodelname"` on any `HistoricalRecords()` fields. Running `makemigrations` then generates two migrations: one creating the models in the new app with the correct `db_table` options, one deleting them from the old app. Both get wrapped in `migrations.SeparateDatabaseAndState` with `database_operations=[]` and all operations inside `state_operations=[]`, so Django updates its internal registry without touching the actual database. A follow-up migration repoints content types so admin permissions continue to work.
+
+The approach is clean in principle, but the first attempt in staging deadlocked. Trying to migrate an entire app's worth of models in one go also took around 30 minutes, because Django has to build a dependency graph across all migrations and ours numbered in the thousands. The fix was to split the migration into smaller chunks, one subdomain at a time instead of one app at a time. During that period the codebase was temporarily harder to follow, because some domains were reorganised and others were not. Clear communication across engineering was essential to avoid creating more inconsistency.
+
+## So what?
+
+The migration had no user-facing impact. No data moved, no downtime, no incidents. What actually changed:
+
+- AI tooling now has consistent, legible patterns to follow rather than a mix of well-considered code and legacy mess
+- Onboarding points new engineers at a directory rather than a 10,000-line file
+- Migration conflicts went from a team-wide bottleneck to a localised inconvenience, because each app now has its own history
+
+The biggest cost was the temporary increase in complexity during the transition. What kept it manageable was doing the internal restructuring first, so the logic was coherent before it moved between apps.

@@ -1,0 +1,64 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  class?: string;
+  sizes?: string;
+  widths?: number[];
+  loading?: "lazy" | "eager";
+  decoding?: "async" | "sync" | "auto";
+  quality?: number;
+  fit?: "scale-down" | "contain" | "cover" | "crop" | "pad";
+  format?: "auto" | "webp" | "avif" | "jpeg" | "png";
+}
+
+const {
+  src,
+  alt,
+  width = 1200,
+  height = 800,
+  class: className = "",
+  sizes,
+  widths = [480, 768, 1024, 1280, 1600],
+  loading = "lazy",
+  decoding = "async",
+  quality = 82,
+  fit = "cover",
+  format = "auto",
+} = Astro.props as Props;
+
+const appendTransformParams = (url: string, nextWidth: number) => {
+  const separator = url.includes("?") ? "&" : "?";
+  return `${url}${separator}width=${nextWidth}&height=${height}&fit=${fit}&quality=${quality}&format=${format}`;
+};
+
+const sortedUniqueWidths = [...new Set(widths)]
+  .filter((value) => Number.isFinite(value) && value > 0)
+  .sort((a, b) => a - b);
+
+const responsiveWidths = sortedUniqueWidths.filter((value) => value <= width);
+if (!responsiveWidths.includes(width)) responsiveWidths.push(width);
+
+const srcset = responsiveWidths
+  .map(
+    (candidateWidth) =>
+      `${appendTransformParams(src, candidateWidth)} ${candidateWidth}w`,
+  )
+  .join(", ");
+
+const fallbackSrc = appendTransformParams(src, width);
+---
+
+<img
+  src={fallbackSrc}
+  srcset={srcset}
+  sizes={sizes}
+  alt={alt}
+  loading={loading}
+  decoding={decoding}
+  width={width}
+  height={height}
+  class={className}
+/>

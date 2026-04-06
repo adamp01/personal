@@ -31,10 +31,10 @@ const {
   transform,
 } = Astro.props as Props;
 
-const hostname = Astro.url.hostname;
+const envTransformOverride =
+  import.meta.env.PUBLIC_ENABLE_CF_IMAGE_TRANSFORMS === "true";
 const shouldTransform =
-  transform ??
-  (hostname.endsWith("adampwood.com") || hostname.endsWith("pages.dev"));
+  transform ?? (import.meta.env.PROD || envTransformOverride);
 
 const toSourceImage = (url: string) => {
   if (url.startsWith("http://") || url.startsWith("https://")) return url;

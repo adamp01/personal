@@ -12,6 +12,7 @@ interface Props {
   quality?: number;
   fit?: "scale-down" | "contain" | "cover" | "crop" | "pad";
   format?: "auto" | "webp" | "avif" | "jpeg" | "png";
+  transform?: boolean;
 }
 
 const {
@@ -27,11 +28,29 @@ const {
   quality = 82,
   fit = "cover",
   format = "auto",
+  transform,
 } = Astro.props as Props;
 
-const appendTransformParams = (url: string, nextWidth: number) => {
-  const separator = url.includes("?") ? "&" : "?";
-  return `${url}${separator}width=${nextWidth}&height=${height}&fit=${fit}&quality=${quality}&format=${format}`;
+const hostname = Astro.url.hostname;
+const shouldTransform =
+  transform ??
+  (hostname.endsWith("adampwood.com") || hostname.endsWith("pages.dev"));
+
+const toSourceImage = (url: string) => {
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  return url.replace(/^\/+/, "");
+};
+
+const buildTransformedUrl = (url: string, nextWidth: number) => {
+  const sourceImage = toSourceImage(url);
+  const options = [
+    `fit=${fit}`,
+    `width=${nextWidth}`,
+    `height=${height}`,
+    `quality=${quality}`,
+    `format=${format}`,
+  ].join(",");
+  return `/cdn-cgi/image/${options}/${sourceImage}`;
 };
 
 const sortedUniqueWidths = [...new Set(widths)]
@@ -44,16 +63,16 @@ if (!responsiveWidths.includes(width)) responsiveWidths.push(width);
 const srcset = responsiveWidths
   .map(
     (candidateWidth) =>
-      `${appendTransformParams(src, candidateWidth)} ${candidateWidth}w`,
+      `${shouldTransform ? buildTransformedUrl(src, candidateWidth) : src} ${candidateWidth}w`,
   )
   .join(", ");
 
-const fallbackSrc = appendTransformParams(src, width);
+const fallbackSrc = shouldTransform ? buildTransformedUrl(src, width) : src;
 ---
 
 <img
   src={fallbackSrc}
-  srcset={srcset}
+  srcset={shouldTransform ? srcset : undefined}
   sizes={sizes}
   alt={alt}
   loading={loading}
